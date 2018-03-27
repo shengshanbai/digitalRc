@@ -1,5 +1,5 @@
-内核		迭代次数	是否auto参数优化	准确率
-LINEAR		400                 false                0.7484
-LINEAR          600                 false                0.7475
-LINEAR		400                 true                 0.7484
+内核		迭代次数		准确率
+LINEAR		400                     0.7484
+LINEAR          1000                    0.7475
+RBF             1000                    0.9833
 

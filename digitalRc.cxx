@@ -7,7 +7,7 @@
 using namespace std;
 using namespace cv;
 
-int trainSvmModel(enum ml::SVM::KernelTypes kernelType,int iterCount) {
+int trainSvmModel(enum ml::SVM::KernelTypes kernelType,int iterCount,float c) {
 	MinistReader labelReader(MNIST_DIR"/train-labels-idx1-ubyte");
 	MinistReader imageReader(MNIST_DIR"/train-images.idx3-ubyte");
 	Mat lablesMat(labelReader.getCount(),1, CV_32SC1);
@@ -26,7 +26,7 @@ int trainSvmModel(enum ml::SVM::KernelTypes kernelType,int iterCount) {
 	Ptr<ml::SVM> svm = ml::SVM::create();
 	svm->setType(ml::SVM::C_SVC);
 	svm->setKernel(kernelType);
-	svm->setC(10.0);
+	svm->setC(c);
 	svm->setGamma(0.01);
 	svm->setTermCriteria(TermCriteria(CV_TERMCRIT_EPS, iterCount, FLT_EPSILON));
 	const Ptr<ml::TrainData> trainData = ml::TrainData::create(trainDataMat, ml::ROW_SAMPLE,lablesMat);
@@ -66,7 +66,7 @@ int detectImage(string imagePath) {
 }
 
 int main(int argc,char** argv){
-	trainSvmModel(ml::SVM::RBF,1000);
+	trainSvmModel(ml::SVM::LINEAR,1000,1);
 	testSvmModel("model.xml");
 	getchar();
 	return 0;
