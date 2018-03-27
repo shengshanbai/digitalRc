@@ -18,7 +18,9 @@ MinistReader::MinistReader(std::string filePath):inputStream(filePath,ios::binar
 	cout << "the item count:" << itemCount << endl;
 	if (type == Image) {
 		inputStream.read((char*)&rows, sizeof(rows));
+		rows = ntohl(rows);
 		inputStream.read((char*)&columns, sizeof(columns));
+		columns = ntohl(columns);
 		cout << "the image rows:" << rows << " columns:" << columns << endl;
 	}
 }
@@ -37,6 +39,21 @@ char MinistReader::readLabel() {
 	return digital;
 }
 
+cv::Mat MinistReader::readImage() {
+	cv::Mat m(columns,rows,CV_32FC1);
+	if (type != Image)
+		return m;
+	for (int i = 0; i < rows; i++) {
+		float* line = m.ptr<float>(i);
+		for (int j = 0; j < columns; j++) {
+			unsigned char pixel;
+			inputStream.read((char*)&pixel,sizeof(pixel));
+			line[j] = pixel;
+		}
+	}
+	return m;
+}
+
 bool MinistReader::hasNext() {
 	return inputStream.peek() != EOF;
 }
@@ -45,9 +62,18 @@ int MinistReader::getCount() {
 	return itemCount;
 }
 
+int32_t MinistReader::getRows() {
+	return rows;
+}
+
+int32_t MinistReader::getCols() {
+	return columns;
+}
+
 MinistReader::~MinistReader()
 {
 	if (inputStream.is_open()) {
 		inputStream.close();
 	}
 }
+

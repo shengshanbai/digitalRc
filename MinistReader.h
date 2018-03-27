@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <cstdint>
+#include <opencv2/core.hpp>
 
 class MinistReader
 {
@@ -19,8 +20,11 @@ public:
 	MinistReader(std::string filePath);
 	Type getType();
 	char readLabel();
+	cv::Mat readImage();
 	bool hasNext();
 	int getCount();
+	int32_t getRows();
+	int32_t getCols();
 	~MinistReader();
 };
 
