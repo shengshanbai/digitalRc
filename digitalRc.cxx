@@ -66,7 +66,7 @@ int detectImage(string imagePath) {
 }
 
 int main(int argc,char** argv){
-	trainSvmModel(ml::SVM::LINEAR,1000,1);
+	trainSvmModel(ml::SVM::LINEAR,500,1);
 	testSvmModel("model.xml");
 	getchar();
 	return 0;
