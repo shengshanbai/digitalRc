@@ -1,6 +1,6 @@
 #include "MinistReader.h"
 
-#define MNIST_DIR "C:\\projects"
+#define MNIST_DIR "E:\\Projects\\cpp"
 #include <iostream>
 #include <opencv2/ml.hpp>
 
@@ -8,7 +8,7 @@ using namespace std;
 using namespace cv;
 
 int trainSvmModel(enum ml::SVM::KernelTypes kernelType,int iterCount) {
-	MinistReader labelReader(MNIST_DIR"/train-labels.idx1-ubyte");
+	MinistReader labelReader(MNIST_DIR"/train-labels-idx1-ubyte");
 	MinistReader imageReader(MNIST_DIR"/train-images.idx3-ubyte");
 	Mat lablesMat(labelReader.getCount(),1, CV_32SC1);
 	int imageVectorLength = imageReader.getCols()*imageReader.getRows();
@@ -27,12 +27,10 @@ int trainSvmModel(enum ml::SVM::KernelTypes kernelType,int iterCount) {
 	svm->setType(ml::SVM::C_SVC);
 	svm->setKernel(kernelType);
 	svm->setC(10);
-	svm->setGamma(1);
-	svm->setCoef0(10);
-	svm->setDegree(2);
-	svm->setTermCriteria(TermCriteria(TermCriteria::MAX_ITER, iterCount, 1e-6));
+	svm->setGamma(0.01);
+	svm->setTermCriteria(TermCriteria(CV_TERMCRIT_EPS, iterCount, FLT_EPSILON));
 	const Ptr<ml::TrainData> trainData = ml::TrainData::create(trainDataMat, ml::ROW_SAMPLE,lablesMat);
-	bool result = svm->trainAuto(trainData);
+	bool result = svm->train(trainData);
 	if (result) {
 		svm->save("model.xml");
 		return 0;
@@ -63,8 +61,12 @@ int testSvmModel(string path) {
 	return 0;
 }
 
+int detectImage(string imagePath) {
+
+}
+
 int main(int argc,char** argv){
-	trainSvmModel(ml::SVM::POLY,400);
+	trainSvmModel(ml::SVM::RBF,1000);
 	testSvmModel("model.xml");
 	getchar();
 	return 0;

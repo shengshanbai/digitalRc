@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.4.1)
 project (digitalRc)
 set (CMAKE_CXX_STANDARD 11)
 # Where to find CMake modules and OpenCV
-set(OpenCV_DIR "C:\\software\\opencv\\build")
+set(OpenCV_DIR "E:\\Projects\\cpp\\opencv\\build")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${OpenCV_DIR}")
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})

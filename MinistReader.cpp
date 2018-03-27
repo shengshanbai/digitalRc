@@ -48,7 +48,7 @@ cv::Mat MinistReader::readImage() {
 		for (int j = 0; j < columns; j++) {
 			unsigned char pixel;
 			inputStream.read((char*)&pixel,sizeof(pixel));
-			line[j] = pixel;
+			line[j] = pixel+0.0/255.0;
 		}
 	}
 	return m;
