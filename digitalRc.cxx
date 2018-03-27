@@ -26,7 +26,7 @@ int trainSvmModel(enum ml::SVM::KernelTypes kernelType,int iterCount) {
 	Ptr<ml::SVM> svm = ml::SVM::create();
 	svm->setType(ml::SVM::C_SVC);
 	svm->setKernel(kernelType);
-	svm->setC(10);
+	svm->setC(10.0);
 	svm->setGamma(0.01);
 	svm->setTermCriteria(TermCriteria(CV_TERMCRIT_EPS, iterCount, FLT_EPSILON));
 	const Ptr<ml::TrainData> trainData = ml::TrainData::create(trainDataMat, ml::ROW_SAMPLE,lablesMat);
@@ -62,7 +62,7 @@ int testSvmModel(string path) {
 }
 
 int detectImage(string imagePath) {
-
+	return 0;
 }
 
 int main(int argc,char** argv){
