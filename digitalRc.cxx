@@ -3,6 +3,8 @@
 #define MNIST_DIR "E:\\Projects\\cpp"
 #include <iostream>
 #include <opencv2/ml.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 
 using namespace std;
 using namespace cv;
@@ -61,13 +63,37 @@ int testSvmModel(string path) {
 	return 0;
 }
 
-int detectImage(string imagePath) {
+int detectImage(string modelPath,string imagePath) {
+	Mat image = imread(imagePath,CV_LOAD_IMAGE_GRAYSCALE);
+	if (image.empty()) {
+		cout << "read image failed!" << endl;
+		return -1;
+	}
+	//进行边缘检测
+	Mat grad_x, grad_y;
+	Mat abs_grad_x, abs_grad_y; 
+	Sobel(image, grad_x, CV_8U, 1, 0, 3);
+	convertScaleAbs(grad_x, abs_grad_x);
+	Sobel(image, grad_y, CV_8U, 0, 1, 3);
+	convertScaleAbs(grad_y, abs_grad_y);
+	Mat grad;
+	addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0, grad);
+	//二值化
+	threshold(grad,grad,25, 255, CV_THRESH_BINARY);
+	//两次膨胀和腐蚀
+	Mat dilateK = getStructuringElement(MORPH_RECT,Size(20,8));
+	Mat erodeK = getStructuringElement(MORPH_RECT, Size(20, 6));
+	dilate(grad,grad,dilateK);
+	erode(grad,grad,erodeK);
+	dilate(grad, grad, dilateK);
+	erode(grad, grad, erodeK);
 	return 0;
 }
 
+#define PROJECT_PATH "C:\\projects\\digitalRc"
+
 int main(int argc,char** argv){
-	trainSvmModel(ml::SVM::LINEAR,500,1);
-	testSvmModel("model.xml");
+	int out = detectImage(PROJECT_PATH"/model_brf.xml", PROJECT_PATH"/image1.jpg");
 	getchar();
 	return 0;
 }
